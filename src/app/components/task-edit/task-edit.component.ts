@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TaskService } from '../../services/task.service';
 import { v4 as uuidv4 } from 'uuid';
 import { Task } from '../../models/task';
+import { ModalService } from '../../services/modal.service';
 @Component({
   selector: 'app-task-edit',
   templateUrl: './task-edit.component.html',
@@ -10,14 +11,17 @@ import { Task } from '../../models/task';
 })
 export class TaskEditComponent {
   taskForm!: FormGroup;
-
-  constructor(private fb: FormBuilder, private taskService: TaskService) {
+  isVisible = false;
+  constructor(private fb: FormBuilder, private taskService: TaskService,private modalService: ModalService) {
   }
 
   ngOnInit(): void {
-    this.taskForm = this.fb.group({
-      Title: ['', Validators.required],
-      Description: ['']
+    this.modalService.modalVisibility.subscribe(isVisible => {
+      this.isVisible = isVisible;
+      this.taskForm = this.fb.group({
+        Title: ['', Validators.required],
+        Description: ['']
+      });    
     });
   }
 
@@ -32,6 +36,13 @@ export class TaskEditComponent {
       this.taskService.addTask(newTask);
       this.taskForm.reset();
       this.taskService.getTasks();
+      this.modalService.hideModal();
+    }else {
+      this.taskForm.markAllAsTouched();
     }
+  }
+
+  closeModal() {
+    this.modalService.hideModal();
   }
 }

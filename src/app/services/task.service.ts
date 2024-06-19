@@ -46,7 +46,7 @@ export class TaskService {
 
   private isLocalStorageAvailable(): boolean {
     try {
-      const testKey = '__test__';
+      const testKey = 'test';
       localStorage.setItem(testKey, testKey);
       localStorage.removeItem(testKey);
       return true;
